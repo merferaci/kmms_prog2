@@ -3,13 +3,14 @@
 #include <iostream>
 #include <cstring>
 #include <algorithm>
+#include <string>  
 
-namespace biv {
+namespace PY {
     class LongNumber {
     private:
-        int* numbers;  // массив цифр числа
-        int length;  // длина цифр в чсиле
-        int sign; // 1 для положительного, -1 для отрицательного, 0 для нуля
+        int* numbers;
+        int length;
+        int sign;
 
     public:
         LongNumber();
@@ -19,7 +20,7 @@ namespace biv {
         LongNumber(LongNumber&& x);
 
         ~LongNumber();
-
+		
         LongNumber& operator = (const char* const str);
         LongNumber& operator = (const LongNumber& x);
         LongNumber& operator = (LongNumber&& x);
@@ -41,8 +42,6 @@ namespace biv {
 
     private:
         int get_length(const char* const str) const noexcept;
-        void normalize();
-        static void add_abs(const LongNumber& a, const LongNumber& b, LongNumber& result);
-        static void sub_abs(const LongNumber& a, const LongNumber& b, LongNumber& result);
+        void remove_leading_zeros();  
     };
 }

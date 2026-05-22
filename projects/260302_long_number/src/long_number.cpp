@@ -397,9 +397,10 @@ LongNumber LongNumber::operator % (const LongNumber& x) const {
         return LongNumber("0");
     }
     
-    LongNumber quotient = *this / x;
+	// a = b * q + r
+    LongNumber quotient = *this / x;  //частное 
     LongNumber product = quotient * x;
-    LongNumber remainder = *this - product;
+    LongNumber remainder = *this - product; // остаток
     
     LongNumber abs_x = x;
     abs_x.sign = 1;

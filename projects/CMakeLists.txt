@@ -5,6 +5,7 @@ set(PROJECTS_LIST
     251125_menu
     251126_menu_2
     260302_long_number
+    260314_vector_list
 )
 
 foreach(PROJECT ${PROJECTS_LIST})

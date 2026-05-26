@@ -17,44 +17,46 @@ namespace PY {
     public:
         float x, y;
         float width, height;
-        float vertSpeed;
-        float horizonSpeed;
-        BOOL isFly;
+        float vert_speed;
+        float horizon_speed;
+        bool is_fly;
         char type;
 
         Object();
         Object(float x, float y, float w, float h, char t);
         void draw(char map[MAP_HEIGHT][MAP_WIDTH + 1]);
-        bool collision(const Object& other);
+        bool check_collision(const Object& other);
     };
 
     class Game {
     private:
         char map[MAP_HEIGHT][MAP_WIDTH + 1];
         Object* bricks;
-        int bricksCount;
+        int bricks_count;
+        int bricks_capacity;
         Object* movings;
-        int movingsCount;
+        int movings_count;
+        int movings_capacity;
         Object mario;
         int level;
         int score;
-        int needReload;
+        bool need_reload;
 
-        void clearMap();
-        void showMap();
-        void putScore();
-        void addBrick(Object brick);
-        void addMoving(Object moving);
-        void deleteMoving(int index);
-        void moveObject(Object* obj);
-        void moveHorizon(Object* obj);
+        void clear_map();
+        void show_map();
+        void put_score();
+        void add_brick(const Object& brick);
+        void add_moving(const Object& moving);
+        void delete_moving(int index);
+        void move_object(Object& obj);
+        void move_horizon(Object& obj);
         
     public:
         Game();
         ~Game();
         void run();
-        void createLevel(int lvl);
-        void checkCollisions();
-        void playerDead();
+        void create_level(int lvl);
+        void check_collisions();
+        void player_dead();
     };
 }

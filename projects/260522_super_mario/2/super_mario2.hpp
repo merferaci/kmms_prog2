@@ -1,5 +1,8 @@
 #pragma once
-
+// TODO 1. глобальные переменные перенести в main
+// по алфавиту 
+// create level if else переделать в switch
+// длинные строки делим на короткие
 #include <windows.h>
 
 namespace PY {

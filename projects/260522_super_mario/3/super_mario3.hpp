@@ -1,6 +1,7 @@
 #pragma once
 #include <windows.h>
-
+// разделить гейм на классы : board; 
+// object на object и moving 
 namespace PY {
     const int MAP_WIDTH = 120;
     const int MAP_HEIGHT = 35;

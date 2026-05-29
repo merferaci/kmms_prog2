@@ -112,7 +112,10 @@ namespace PY {
                 if (obj->vertSpeed > 0)
                     obj->isFly = FALSE;
                 
-                if ((game.brick[i].cType == '?') && (obj->vertSpeed < 0) && (obj == &game.mario)) {
+                if (game.brick[i].cType == '?' &&
+					obj->vertSpeed < 0 && 
+					obj == &game.mario
+				) {
                     game.brick[i].cType = '-';
                     SObject* newMoving = get_new_moving(game.moving, game.movingLength);
                     init_object(newMoving, game.brick[i].x, game.brick[i].y - 3, 3, 2, '$');
@@ -209,58 +212,61 @@ namespace PY {
         game.needReload = 1;
     }
 
-    void create_level(GameState& game, int lvl) {
-        system("color 9F");
-        
-        free(game.brick);
-        free(game.moving);
-        
-        game.brickLength = 0;
-        game.movingLength = 0;
-        game.brick = NULL;
-        game.moving = NULL;
-        
-        init_object(&game.mario, 39, 10, 3, 3, '@');
-        game.score = 0;
-        game.needReload = 0;
-        
-        if (lvl == 1) {
-            init_object(get_new_brick(game.brick, game.brickLength), 20, 20, 40, 5, '#');
-            init_object(get_new_brick(game.brick, game.brickLength), 30, 10, 5, 3, '?');
-            init_object(get_new_brick(game.brick, game.brickLength), 50, 10, 5, 3, '?');
-            init_object(get_new_brick(game.brick, game.brickLength), 60, 15, 40, 10, '#');
-            init_object(get_new_brick(game.brick, game.brickLength), 60, 5, 5, 3, '-');
-            init_object(get_new_brick(game.brick, game.brickLength), 70, 5, 5, 3, '?');
-            init_object(get_new_brick(game.brick, game.brickLength), 75, 5, 5, 3, '-');
-            init_object(get_new_brick(game.brick, game.brickLength), 80, 5, 5, 3, '?');
-            init_object(get_new_brick(game.brick, game.brickLength), 85, 5, 10, 3, '-');
-            init_object(get_new_brick(game.brick, game.brickLength), 100, 20, 20, 5, '#');
-            init_object(get_new_brick(game.brick, game.brickLength), 120, 15, 10, 10, '#');
-            init_object(get_new_brick(game.brick, game.brickLength), 150, 20, 40, 5, '#');
-            init_object(get_new_brick(game.brick, game.brickLength), 210, 15, 10, 10, '+');
-            init_object(get_new_moving(game.moving, game.movingLength), 25, 10, 3, 2, 'o');
-            init_object(get_new_moving(game.moving, game.movingLength), 80, 10, 3, 2, 'o');
-        } 
-		else if (lvl == 2) {
-            init_object(get_new_brick(game.brick, game.brickLength), 20, 20, 40, 5, '#');
-            init_object(get_new_brick(game.brick, game.brickLength), 60, 15, 10, 10, '#');
-            init_object(get_new_brick(game.brick, game.brickLength), 80, 20, 20, 5, '#');
-            init_object(get_new_brick(game.brick, game.brickLength), 120, 15, 10, 10, '#');
-            init_object(get_new_brick(game.brick, game.brickLength), 150, 20, 40, 5, '#');
-            init_object(get_new_brick(game.brick, game.brickLength), 210, 15, 10, 10, '+');
-            init_object(get_new_moving(game.moving, game.movingLength), 25, 10, 3, 2, 'o');
-            init_object(get_new_moving(game.moving, game.movingLength), 80, 10, 3, 2, 'o');
-            init_object(get_new_moving(game.moving, game.movingLength), 65, 10, 3, 2, 'o');
-            init_object(get_new_moving(game.moving, game.movingLength), 120, 10, 3, 2, 'o');
-            init_object(get_new_moving(game.moving, game.movingLength), 160, 10, 3, 2, 'o');
-            init_object(get_new_moving(game.moving, game.movingLength), 175, 10, 3, 2, 'o');
-        } 
-		else if (lvl == 3) {
-            init_object(get_new_brick(game.brick, game.brickLength), 20, 20, 40, 5, '#');
-            init_object(get_new_brick(game.brick, game.brickLength), 80, 20, 15, 5, '#');
-            init_object(get_new_brick(game.brick, game.brickLength), 120, 15, 15, 10, '#');
-            init_object(get_new_brick(game.brick, game.brickLength), 160, 10, 15, 15, '+');
-        }
-    }
-	
+	void create_level(GameState& game, int lvl) {
+		system("color 9F");
+    
+		free(game.brick);
+		free(game.moving);
+    
+		game.brickLength = 0;
+		game.movingLength = 0;
+		game.brick = NULL;
+		game.moving = NULL;
+    
+		init_object(&game.mario, 39, 10, 3, 3, '@');
+		game.score = 0;
+		game.needReload = 0;
+    
+		switch (lvl) {
+			case 1:
+				init_object(get_new_brick(game.brick, game.brickLength), 20, 20, 40, 5, '#');
+				init_object(get_new_brick(game.brick, game.brickLength), 30, 10, 5, 3, '?');
+				init_object(get_new_brick(game.brick, game.brickLength), 50, 10, 5, 3, '?');
+				init_object(get_new_brick(game.brick, game.brickLength), 60, 15, 40, 10, '#');
+				init_object(get_new_brick(game.brick, game.brickLength), 60, 5, 5, 3, '-');
+				init_object(get_new_brick(game.brick, game.brickLength), 70, 5, 5, 3, '?');
+				init_object(get_new_brick(game.brick, game.brickLength), 75, 5, 5, 3, '-');
+				init_object(get_new_brick(game.brick, game.brickLength), 80, 5, 5, 3, '?');
+				init_object(get_new_brick(game.brick, game.brickLength), 85, 5, 10, 3, '-');
+				init_object(get_new_brick(game.brick, game.brickLength), 100, 20, 20, 5, '#');
+				init_object(get_new_brick(game.brick, game.brickLength), 120, 15, 10, 10, '#');
+				init_object(get_new_brick(game.brick, game.brickLength), 150, 20, 40, 5, '#');
+				init_object(get_new_brick(game.brick, game.brickLength), 210, 15, 10, 10, '+');
+				init_object(get_new_moving(game.moving, game.movingLength), 25, 10, 3, 2, 'o');
+				init_object(get_new_moving(game.moving, game.movingLength), 80, 10, 3, 2, 'o');
+				break;
+				
+			case 2:
+				init_object(get_new_brick(game.brick, game.brickLength), 20, 20, 40, 5, '#');
+				init_object(get_new_brick(game.brick, game.brickLength), 60, 15, 10, 10, '#');
+				init_object(get_new_brick(game.brick, game.brickLength), 80, 20, 20, 5, '#');
+				init_object(get_new_brick(game.brick, game.brickLength), 120, 15, 10, 10, '#');
+				init_object(get_new_brick(game.brick, game.brickLength), 150, 20, 40, 5, '#');
+				init_object(get_new_brick(game.brick, game.brickLength), 210, 15, 10, 10, '+');
+				init_object(get_new_moving(game.moving, game.movingLength), 25, 10, 3, 2, 'o');
+				init_object(get_new_moving(game.moving, game.movingLength), 80, 10, 3, 2, 'o');
+				init_object(get_new_moving(game.moving, game.movingLength), 65, 10, 3, 2, 'o');
+				init_object(get_new_moving(game.moving, game.movingLength), 120, 10, 3, 2, 'o');
+				init_object(get_new_moving(game.moving, game.movingLength), 160, 10, 3, 2, 'o');
+				init_object(get_new_moving(game.moving, game.movingLength), 175, 10, 3, 2, 'o');
+				break;
+				
+			case 3:
+				init_object(get_new_brick(game.brick, game.brickLength), 20, 20, 40, 5, '#');
+				init_object(get_new_brick(game.brick, game.brickLength), 80, 20, 15, 5, '#');
+				init_object(get_new_brick(game.brick, game.brickLength), 120, 15, 15, 10, '#');
+				init_object(get_new_brick(game.brick, game.brickLength), 160, 10, 15, 15, '+');
+				break;
+		}
+	}
 } 

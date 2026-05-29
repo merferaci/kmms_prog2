@@ -1,8 +1,7 @@
-#pragma once
 // TODO 1. глобальные переменные перенести в main
-// по алфавиту 
-// create level if else переделать в switch
-// длинные строки делим на короткие
+
+#pragma once
+
 #include <windows.h>
 
 namespace PY {
@@ -40,22 +39,22 @@ namespace PY {
     };
 
     void clear_map(char map[MAP_HEIGHT][MAP_WIDTH + 1]);
-    void show_map_fast(const char map[MAP_HEIGHT][MAP_WIDTH + 1]);
-    void set_object_pos(SObject* obj, float xPos, float yPos);
-    void init_object(SObject* obj, float xPos, float yPos, float oWidth, float oHeight, char inType);
-    BOOL is_collision(const SObject& o1, const SObject& o2);
+    void create_level(GameState& game, int lvl);
     void delete_moving(SObject*& moving, int& movingLength, int i);
-    void mario_collision(GameState& game);
     SObject* get_new_brick(SObject*& brick, int& brickLength);
     SObject* get_new_moving(SObject*& moving, int& movingLength);
-    void put_score_on_map(char map[MAP_HEIGHT][MAP_WIDTH + 1], int score);
-    void vert_move_object(GameState& game, SObject* obj);
-    void horizon_move_object(GameState& game, SObject* obj);
-    BOOL is_pos_in_map(int x, int y);
-    void put_object_on_map(char map[MAP_HEIGHT][MAP_WIDTH + 1], const SObject& obj);
-    void set_cur(int x, int y);
     void horizon_move_map(GameState& game, float dx);
-    void create_level(GameState& game, int lvl);
+    void horizon_move_object(GameState& game, SObject* obj);
+    void init_object(SObject* obj, float xPos, float yPos, float oWidth, float oHeight, char inType);
+    BOOL is_collision(const SObject& o1, const SObject& o2);
+    BOOL is_pos_in_map(int x, int y);
+    void mario_collision(GameState& game);
     void player_dead(GameState& game);
+    void put_object_on_map(char map[MAP_HEIGHT][MAP_WIDTH + 1], const SObject& obj);
+    void put_score_on_map(char map[MAP_HEIGHT][MAP_WIDTH + 1], int score);
+    void set_cur(int x, int y);
+    void set_object_pos(SObject* obj, float xPos, float yPos);
+    void show_map_fast(const char map[MAP_HEIGHT][MAP_WIDTH + 1]);
+    void vert_move_object(GameState& game, SObject* obj);
 
 }

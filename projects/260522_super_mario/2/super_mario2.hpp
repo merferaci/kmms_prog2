@@ -1,21 +1,8 @@
-// TODO 1. глобальные переменные перенести в main
-
 #pragma once
 
 #include <windows.h>
 
 namespace PY {
-
-    const int MAP_WIDTH = 120;
-    const int MAP_HEIGHT = 35;
-    const int MAX_LVL = 3;
-    const int SCORE_MONSTER = 50;
-    const int SCORE_COIN = 100;
-    const float GRAVITY = 0.05f;
-    const float JUMP_SPEED = -1.0f;
-    const float MARIO_SPEED = 0.8f;
-    const float MONSTER_SPEED = 0.2f;
-    const float COIN_VERT_SPEED = -0.7f;
 
     struct SObject {
         float x, y;
@@ -27,7 +14,7 @@ namespace PY {
     };
 
     struct GameState {
-        char map[MAP_HEIGHT][MAP_WIDTH + 1];
+        char map[35][121];
         SObject mario;
         SObject* brick;
         int brickLength;
@@ -35,10 +22,19 @@ namespace PY {
         int movingLength;
         int level;
         int score;
-        int needReload;  
+        int needReload;
+
+        int max_lvl;
+        int score_monster;
+        int score_coin;
+        float gravity;
+        float jump_speed;
+        float mario_speed;
+        float monster_speed;
+        float coin_vert_speed;
     };
 
-    void clear_map(char map[MAP_HEIGHT][MAP_WIDTH + 1]);
+    void clear_map(char map[35][121]);
     void create_level(GameState& game, int lvl);
     void delete_moving(SObject*& moving, int& movingLength, int i);
     SObject* get_new_brick(SObject*& brick, int& brickLength);
@@ -50,11 +46,13 @@ namespace PY {
     BOOL is_pos_in_map(int x, int y);
     void mario_collision(GameState& game);
     void player_dead(GameState& game);
-    void put_object_on_map(char map[MAP_HEIGHT][MAP_WIDTH + 1], const SObject& obj);
-    void put_score_on_map(char map[MAP_HEIGHT][MAP_WIDTH + 1], int score);
+    void put_object_on_map(char map[35][121], const SObject& obj);
+    void put_score_on_map(char map[35][121], int score);
     void set_cur(int x, int y);
     void set_object_pos(SObject* obj, float xPos, float yPos);
-    void show_map_fast(const char map[MAP_HEIGHT][MAP_WIDTH + 1]);
+    void show_map_fast(const char map[35][121]);
     void vert_move_object(GameState& game, SObject* obj);
 
+    const int MAP_WIDTH = 120;
+    const int MAP_HEIGHT = 35;
 }

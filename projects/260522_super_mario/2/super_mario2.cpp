@@ -6,7 +6,7 @@
 
 namespace PY {
 
-    void clear_map(char map[MAP_HEIGHT][MAP_WIDTH + 1]) {
+    void clear_map(char map[35][121]) {
         for (int i = 0; i < MAP_WIDTH; i++)
             map[0][i] = ' ';
         map[0][MAP_WIDTH] = '\0';
@@ -15,9 +15,9 @@ namespace PY {
         }
     }
 
-    void show_map_fast(const char map[MAP_HEIGHT][MAP_WIDTH + 1]) {
+    void show_map_fast(const char map[35][121]) {
         static HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-        static char buffer[MAP_HEIGHT * (MAP_WIDTH + 2)];
+        static char buffer[35 * (120 + 2)];
         int pos = 0;
         for (int j = 0; j < MAP_HEIGHT; j++) {
             memcpy(buffer + pos, map[j], MAP_WIDTH);
@@ -39,7 +39,7 @@ namespace PY {
         obj->width = oWidth;
         obj->height = oHeight;
         obj->vertSpeed = 0;
-        obj->horizonSpeed = MONSTER_SPEED;
+        obj->horizonSpeed = 0.2f;
         obj->isFly = FALSE;
         obj->cType = inType;
     }
@@ -64,20 +64,20 @@ namespace PY {
                     if (game.mario.isFly == TRUE &&
                         game.mario.vertSpeed > 0 &&
                         game.mario.y + game.mario.height < game.moving[i].y + game.moving[i].height * 0.5) 
-					{
-                        game.score += SCORE_MONSTER;
+                    {
+                        game.score += game.score_monster;
                         delete_moving(game.moving, game.movingLength, i);
                         i--;
                         continue;
                     } 
-					else {
+                    else {
                         player_dead(game);
                         return;
                     }
                 }
 
                 if (game.moving[i].cType == '$') {
-                    game.score += SCORE_COIN;
+                    game.score += game.score_coin;
                     delete_moving(game.moving, game.movingLength, i);
                     i--;
                     continue;
@@ -98,7 +98,7 @@ namespace PY {
         return moving + movingLength - 1;
     }
 
-    void put_score_on_map(char map[MAP_HEIGHT][MAP_WIDTH + 1], int score) {
+    void put_score_on_map(char map[35][121], int score) {
         char c[30];
         sprintf(c, "Score: %d", score);
         int len = strlen(c);
@@ -109,7 +109,7 @@ namespace PY {
 
     void vert_move_object(GameState& game, SObject* obj) {
         obj->isFly = TRUE;
-        obj->vertSpeed += GRAVITY;
+        obj->vertSpeed += game.gravity;
         obj->y += obj->vertSpeed;
 
         for (int i = 0; i < game.brickLength; i++) {
@@ -121,11 +121,11 @@ namespace PY {
                 if (game.brick[i].cType == '?' &&
                     obj->vertSpeed < 0 &&
                     obj == &game.mario) 
-				{
+                {
                     game.brick[i].cType = '-';
                     SObject* newMoving = get_new_moving(game.moving, game.movingLength);
                     init_object(newMoving, game.brick[i].x, game.brick[i].y - 3, 3, 2, '$');
-                    game.moving[game.movingLength - 1].vertSpeed = COIN_VERT_SPEED;
+                    game.moving[game.movingLength - 1].vertSpeed = game.coin_vert_speed;
                 }
 
                 obj->y -= obj->vertSpeed;
@@ -134,7 +134,7 @@ namespace PY {
 
                 if (game.brick[i].cType == '+') {
                     game.level++;
-                    if (game.level > MAX_LVL) {
+                    if (game.level > game.max_lvl) {
                         game.level = 1;
                     }
                     system("color 2F");
@@ -172,7 +172,7 @@ namespace PY {
                y >= 0 && y < MAP_HEIGHT;
     }
 
-    void put_object_on_map(char map[MAP_HEIGHT][MAP_WIDTH + 1], const SObject& obj) {
+    void put_object_on_map(char map[35][121], const SObject& obj) {
         int ix = (int)(obj.x + 0.5f);
         int iy = (int)(obj.y + 0.5f);
         int iWidth = (int)(obj.width + 0.5f);
@@ -209,7 +209,7 @@ namespace PY {
         if (collision) {
             game.mario.x = oldX;
         } 
-		else {
+        else {
             for (int i = 0; i < game.brickLength; i++) {
                 game.brick[i].x += dx;
             }

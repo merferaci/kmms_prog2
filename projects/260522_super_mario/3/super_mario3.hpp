@@ -42,7 +42,7 @@ namespace PY {
     };
 
     class Game {
-    private:
+    public:
         char map[MAP_HEIGHT][MAP_WIDTH + 1];
         Object* bricks;
         int bricks_count;
@@ -55,6 +55,8 @@ namespace PY {
         int score;
         bool need_reload;
 
+        Game();
+        ~Game();
         void clear_map();
         void show_map();
         void put_score();
@@ -63,11 +65,6 @@ namespace PY {
         void delete_moving(int index);
         void move_object(Moving& obj);
         void move_horizon(Moving& obj);
-        
-    public:
-        Game();
-        ~Game();
-        void run();
         void create_level(int lvl);
         void check_collisions();
         void player_dead();

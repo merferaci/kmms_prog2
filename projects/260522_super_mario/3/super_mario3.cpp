@@ -223,63 +223,67 @@ namespace PY {
         }
     }
     
-    void Game::create_level(int lvl) {
-        system("color 9F");
-        
-        delete[] bricks;
-        delete[] movings;
-        
-        bricks_count = 0;
-        bricks_capacity = 10;
-        movings_count = 0;
-        movings_capacity = 10;
-        
-        bricks = new Object[bricks_capacity];
-        movings = new Moving[movings_capacity];
-        
-        mario = Moving(39, 10, 3, 3, '@');
-        score = 0;
-        need_reload = false;
-        
-        if (lvl == 1) {
-            add_brick(Object(20, 20, 40, 5, '#'));
-            add_brick(Object(30, 10, 5, 3, '?'));
-            add_brick(Object(50, 10, 5, 3, '?'));
-            add_brick(Object(60, 15, 40, 10, '#'));
-            add_brick(Object(60, 5, 5, 3, '-'));
-            add_brick(Object(70, 5, 5, 3, '?'));
-            add_brick(Object(75, 5, 5, 3, '-'));
-            add_brick(Object(80, 5, 5, 3, '?'));
-            add_brick(Object(85, 5, 10, 3, '-'));
-            add_brick(Object(100, 20, 20, 5, '#'));
-            add_brick(Object(120, 15, 10, 10, '#'));
-            add_brick(Object(150, 20, 40, 5, '#'));
-            add_brick(Object(210, 15, 10, 10, '+'));
-            add_moving(Moving(25, 10, 3, 2, 'o'));
-            add_moving(Moving(80, 10, 3, 2, 'o'));
-        }
-        else if (lvl == 2) {
-            add_brick(Object(20, 20, 40, 5, '#'));
-            add_brick(Object(60, 15, 10, 10, '#'));
-            add_brick(Object(80, 20, 20, 5, '#'));
-            add_brick(Object(120, 15, 10, 10, '#'));
-            add_brick(Object(150, 20, 40, 5, '#'));
-            add_brick(Object(210, 15, 10, 10, '+'));
-            add_moving(Moving(25, 10, 3, 2, 'o'));
-            add_moving(Moving(80, 10, 3, 2, 'o'));
-            add_moving(Moving(65, 10, 3, 2, 'o'));
-            add_moving(Moving(120, 10, 3, 2, 'o'));
-            add_moving(Moving(160, 10, 3, 2, 'o'));
-            add_moving(Moving(175, 10, 3, 2, 'o'));
-        }
-        else if (lvl == 3) {
-            add_brick(Object(20, 20, 40, 5, '#'));
-            add_brick(Object(80, 20, 15, 5, '#'));
-            add_brick(Object(120, 15, 15, 10, '#'));
-            add_brick(Object(160, 10, 15, 15, '+'));
-        }
-    }
-    
+	void Game::create_level(int lvl) {
+		system("color 9F");
+		
+		delete[] bricks;
+		delete[] movings;
+		
+		bricks_count = 0;
+		bricks_capacity = 10;
+		movings_count = 0;
+		movings_capacity = 10;
+		
+		bricks = new Object[bricks_capacity];
+		movings = new Moving[movings_capacity];
+		
+		mario = Moving(39, 10, 3, 3, '@');
+		score = 0;
+		need_reload = false;
+		
+		switch (lvl) {
+			case 1:
+				add_brick(Object(20, 20, 40, 5, '#'));
+				add_brick(Object(30, 10, 5, 3, '?'));
+				add_brick(Object(50, 10, 5, 3, '?'));
+				add_brick(Object(60, 15, 40, 10, '#'));
+				add_brick(Object(60, 5, 5, 3, '-'));
+				add_brick(Object(70, 5, 5, 3, '?'));
+				add_brick(Object(75, 5, 5, 3, '-'));
+				add_brick(Object(80, 5, 5, 3, '?'));
+				add_brick(Object(85, 5, 10, 3, '-'));
+				add_brick(Object(100, 20, 20, 5, '#'));
+				add_brick(Object(120, 15, 10, 10, '#'));
+				add_brick(Object(150, 20, 40, 5, '#'));
+				add_brick(Object(210, 15, 10, 10, '+'));
+				add_moving(Moving(25, 10, 3, 2, 'o'));
+				add_moving(Moving(80, 10, 3, 2, 'o'));
+				break;
+				
+			case 2:
+				add_brick(Object(20, 20, 40, 5, '#'));
+				add_brick(Object(60, 15, 10, 10, '#'));
+				add_brick(Object(80, 20, 20, 5, '#'));
+				add_brick(Object(120, 15, 10, 10, '#'));
+				add_brick(Object(150, 20, 40, 5, '#'));
+				add_brick(Object(210, 15, 10, 10, '+'));
+				add_moving(Moving(25, 10, 3, 2, 'o'));
+				add_moving(Moving(80, 10, 3, 2, 'o'));
+				add_moving(Moving(65, 10, 3, 2, 'o'));
+				add_moving(Moving(120, 10, 3, 2, 'o'));
+				add_moving(Moving(160, 10, 3, 2, 'o'));
+				add_moving(Moving(175, 10, 3, 2, 'o'));
+				break;
+				
+			case 3:
+				add_brick(Object(20, 20, 40, 5, '#'));
+				add_brick(Object(80, 20, 15, 5, '#'));
+				add_brick(Object(120, 15, 15, 10, '#'));
+				add_brick(Object(160, 10, 15, 15, '+'));
+				break;
+		}
+	}
+		
     void Game::check_collisions() {
         for (int i = 0; i < movings_count; i++) {
             if (mario.check_collision(movings[i])) {

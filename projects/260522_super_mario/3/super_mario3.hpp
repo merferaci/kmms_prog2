@@ -4,51 +4,72 @@
 namespace PY {
     const int MAP_WIDTH = 120;
     const int MAP_HEIGHT = 35;
+    const int MAX_LVL = 3;
+    const int SCORE_MONSTER = 50;
+    const int SCORE_COIN = 100;
+    const float GRAVITY = 0.05f;
+    const float JUMP_SPEED = -1.0f;
+    const float MARIO_SPEED = 0.8f;
+    const float MONSTER_SPEED = 0.2f;
+    const float COIN_VERT_SPEED = -0.7f;
 
-    struct Object {
+    class Object {
+    public:
+        float x, y;
+        float width, height;
+        char type;
+
+        Object();
+        Object(float x, float y, float w, float h, char t);
+        void draw(char map[MAP_HEIGHT][MAP_WIDTH + 1]);
+        bool check_collision(const Object& other);
+    };
+
+    class Moving {
+    public:
         float x, y;
         float width, height;
         float vert_speed;
         float horizon_speed;
         bool is_fly;
         char type;
+
+        Moving();
+        Moving(float x, float y, float w, float h, char t);
+        void draw(char map[MAP_HEIGHT][MAP_WIDTH + 1]);
+        bool check_collision(const Object& other);
+        bool check_collision(const Moving& other);
     };
 
-    struct GameState {
+    class Game {
+    private:
         char map[MAP_HEIGHT][MAP_WIDTH + 1];
-        Object mario;
         Object* bricks;
         int bricks_count;
-        Object* movings;
+        int bricks_capacity;
+        Moving* movings;
         int movings_count;
+        int movings_capacity;
+        Moving mario;
         int level;
         int score;
         bool need_reload;
 
-        int max_lvl;
-        int score_monster;
-        int score_coin;
-        float gravity;
-        float jump_speed;
-        float mario_speed;
-        float monster_speed;
-        float coin_vert_speed;
+        void clear_map();
+        void show_map();
+        void put_score();
+        void add_brick(const Object& brick);
+        void add_moving(const Moving& moving);
+        void delete_moving(int index);
+        void move_object(Moving& obj);
+        void move_horizon(Moving& obj);
+        
+    public:
+        Game();
+        ~Game();
+        void run();
+        void create_level(int lvl);
+        void check_collisions();
+        void player_dead();
     };
-
-    void add_brick(GameState& game, const Object& brick);
-    void add_moving(GameState& game, const Object& moving);
-    bool check_collision(const Object& o1, const Object& o2);
-    void check_collisions(GameState& game);
-    void clear_map(char map[MAP_HEIGHT][MAP_WIDTH + 1]);
-    void create_level(GameState& game, int lvl);
-    void delete_moving(GameState& game, int index);
-    void init_object(Object* obj, float x, float y, float w, float h, char t);
-    void move_horizon(GameState& game, Object& obj);
-    void move_map(GameState& game, float dx);
-    void move_object(GameState& game, Object& obj);
-    void player_dead(GameState& game);
-    void put_object_on_map(char map[MAP_HEIGHT][MAP_WIDTH + 1], const Object& obj);
-    void put_score_on_map(char map[MAP_HEIGHT][MAP_WIDTH + 1], int score);
-    void set_cursor_pos(int x, int y);
-    void show_map_fast(const char map[MAP_HEIGHT][MAP_WIDTH + 1]);
 }

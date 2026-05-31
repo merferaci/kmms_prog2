@@ -2,17 +2,6 @@
 #include <windows.h>
 
 namespace PY {
-    const int MAP_WIDTH = 120;
-    const int MAP_HEIGHT = 35;
-    const int MAX_LVL = 3;
-    const int SCORE_MONSTER = 50;
-    const int SCORE_COIN = 100;
-    const float GRAVITY = 0.05f;
-    const float JUMP_SPEED = -1.0f;
-    const float MARIO_SPEED = 0.8f;
-    const float MONSTER_SPEED = 0.2f;
-    const float COIN_VERT_SPEED = -0.7f;
-
     class Object {
     public:
         float x, y;
@@ -21,10 +10,10 @@ namespace PY {
 
         Object();
         Object(float x, float y, float w, float h, char t);
-        void draw(char map[MAP_HEIGHT][MAP_WIDTH + 1]);
+        void draw(char map[35][121]);
         bool check_collision(const Object& other);
     };
-
+	
     class Moving {
     public:
         float x, y;
@@ -36,14 +25,14 @@ namespace PY {
 
         Moving();
         Moving(float x, float y, float w, float h, char t);
-        void draw(char map[MAP_HEIGHT][MAP_WIDTH + 1]);
+        void draw(char map[35][121]);
         bool check_collision(const Object& other);
         bool check_collision(const Moving& other);
     };
 
     class Map {
     public:
-        char data[MAP_HEIGHT][MAP_WIDTH + 1];
+        char data[35][121];
         
         void clear();
         void show();
@@ -76,7 +65,20 @@ namespace PY {
         int score;
         bool need_reload;
         
-        Game();
+        int MAP_WIDTH;
+        int MAP_HEIGHT;
+        int MAX_LVL;
+        int SCORE_MONSTER;
+        int SCORE_COIN;
+        float GRAVITY;
+        float JUMP_SPEED;
+        float MARIO_SPEED;
+        float MONSTER_SPEED;
+        float COIN_VERT_SPEED;
+        
+        Game(int map_width, int map_height, int max_lvl, int score_monster, 
+             int score_coin, float gravity, float jump_speed, float mario_speed,
+             float monster_speed, float coin_vert_speed);
         ~Game();
         void create_level(int lvl);
         void move_object(Moving& obj);

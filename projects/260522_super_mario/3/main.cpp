@@ -4,8 +4,20 @@
 
 int main() {
     using namespace PY;
+	
+    const int MAP_WIDTH = 120;
+    const int MAP_HEIGHT = 35;
+    const int MAX_LVL = 3;
+    const int SCORE_MONSTER = 50;
+    const int SCORE_COIN = 100;
+    const float GRAVITY = 0.05f;
+    const float JUMP_SPEED = -1.0f;
+    const float MARIO_SPEED = 0.8f;
+    const float MONSTER_SPEED = 0.2f;
+    const float COIN_VERT_SPEED = -0.7f;
     
-    Game game;
+    Game game(MAP_WIDTH, MAP_HEIGHT, MAX_LVL, SCORE_MONSTER, SCORE_COIN,
+              GRAVITY, JUMP_SPEED, MARIO_SPEED, MONSTER_SPEED, COIN_VERT_SPEED);
     game.create_level(game.level);
     
     system("mode con cols=121 lines=36");
@@ -25,15 +37,15 @@ int main() {
         game.game_map.clear();
         
         if (!game.mario.is_fly && GetKeyState(VK_SPACE) < 0) {
-            game.mario.vert_speed = JUMP_SPEED;
+            game.mario.vert_speed = game.JUMP_SPEED;
         }
         
         float oldX = game.mario.x;
         if (GetKeyState('A') < 0) {
-            game.mario.x -= MARIO_SPEED;
+            game.mario.x -= game.MARIO_SPEED;
         }
         if (GetKeyState('D') < 0) {
-            game.mario.x += MARIO_SPEED;
+            game.mario.x += game.MARIO_SPEED;
         }
         
         bool collision = false;
@@ -50,7 +62,7 @@ int main() {
             game.scroll_world(game.mario.x - oldX);
         }
         
-        if (game.mario.y > MAP_HEIGHT) {
+        if (game.mario.y > game.MAP_HEIGHT) {
             game.player_dead();
             continue;
         }
@@ -65,7 +77,7 @@ int main() {
         for (int i = 0; i < game.objects.movings_count; i++) {
             game.move_object(game.objects.movings[i]);
             game.move_horizon(game.objects.movings[i]);
-            if (game.objects.movings[i].y > MAP_HEIGHT) {
+            if (game.objects.movings[i].y > game.MAP_HEIGHT) {
                 game.objects.delete_moving(i);
                 i--;
                 continue;

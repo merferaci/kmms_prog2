@@ -4,7 +4,7 @@
 #include <string.h>
 
 namespace PY {
-    
+	
     Object::Object() : x(0), y(0), width(0), height(0), type(' ') {}
     
     Object::Object(float x, float y, float w, float h, char t) {
@@ -15,7 +15,7 @@ namespace PY {
         this->type = t;
     }
     
-    void Object::draw(char map[MAP_HEIGHT][MAP_WIDTH + 1]) {
+    void Object::draw(char map[35][121]) {
         int ix = (int)(x + 0.5f);
         int iy = (int)(y + 0.5f);
         int iw = (int)(width + 0.5f);
@@ -23,7 +23,7 @@ namespace PY {
         
         for (int i = ix; i < ix + iw; i++) {
             for (int j = iy; j < iy + ih; j++) {
-                if (i >= 0 && i < MAP_WIDTH && j >= 0 && j < MAP_HEIGHT) {
+                if (i >= 0 && i < 120 && j >= 0 && j < 35) {
                     map[j][i] = type;
                 }
             }
@@ -36,7 +36,7 @@ namespace PY {
     }
     
     Moving::Moving() : x(0), y(0), width(0), height(0), 
-                       vert_speed(0), horizon_speed(MONSTER_SPEED), 
+                       vert_speed(0), horizon_speed(0.2f), 
                        is_fly(false), type(' ') {}
     
     Moving::Moving(float x, float y, float w, float h, char t) {
@@ -45,12 +45,12 @@ namespace PY {
         this->width = w;
         this->height = h;
         vert_speed = 0;
-        horizon_speed = MONSTER_SPEED;
+        horizon_speed = 0.2f;
         is_fly = false;
         type = t;
     }
     
-    void Moving::draw(char map[MAP_HEIGHT][MAP_WIDTH + 1]) {
+    void Moving::draw(char map[35][121]) {
         int ix = (int)(x + 0.5f);
         int iy = (int)(y + 0.5f);
         int iw = (int)(width + 0.5f);
@@ -58,7 +58,7 @@ namespace PY {
         
         for (int i = ix; i < ix + iw; i++) {
             for (int j = iy; j < iy + ih; j++) {
-                if (i >= 0 && i < MAP_WIDTH && j >= 0 && j < MAP_HEIGHT) {
+                if (i >= 0 && i < 120 && j >= 0 && j < 35) {
                     map[j][i] = type;
                 }
             }
@@ -76,24 +76,24 @@ namespace PY {
     }
     
     void Map::clear() {
-        for (int i = 0; i < MAP_WIDTH; i++) {
+        for (int i = 0; i < 120; i++) {
             data[0][i] = ' ';
         }
-        data[0][MAP_WIDTH] = '\0';
+        data[0][120] = '\0';
         
-        for (int j = 1; j < MAP_HEIGHT; j++) {
-            memcpy(data[j], data[0], MAP_WIDTH + 1);
+        for (int j = 1; j < 35; j++) {
+            memcpy(data[j], data[0], 121);
         }
     }
     
     void Map::show() {
         static HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-        static char buffer[MAP_HEIGHT * (MAP_WIDTH + 2)];
+        static char buffer[35 * 122];
         int pos = 0;
         
-        for (int j = 0; j < MAP_HEIGHT; j++) {
-            memcpy(buffer + pos, data[j], MAP_WIDTH);
-            pos += MAP_WIDTH;
+        for (int j = 0; j < 35; j++) {
+            memcpy(buffer + pos, data[j], 120);
+            pos += 120;
             buffer[pos++] = '\n';
         }
         
@@ -176,11 +176,25 @@ namespace PY {
         movings = new Moving[movings_capacity];
     }
     
-    Game::Game() {
+    Game::Game(int map_width, int map_height, int max_lvl, int score_monster, 
+               int score_coin, float gravity, float jump_speed, float mario_speed,
+               float monster_speed, float coin_vert_speed) {
+        MAP_WIDTH = map_width;
+        MAP_HEIGHT = map_height;
+        MAX_LVL = max_lvl;
+        SCORE_MONSTER = score_monster;
+        SCORE_COIN = score_coin;
+        GRAVITY = gravity;
+        JUMP_SPEED = jump_speed;
+        MARIO_SPEED = mario_speed;
+        MONSTER_SPEED = monster_speed;
+        COIN_VERT_SPEED = coin_vert_speed;
+        
         level = 1;
         score = 0;
         need_reload = false;
         mario = Moving(39, 10, 3, 3, '@');
+        mario.horizon_speed = MONSTER_SPEED;
     }
     
     Game::~Game() {}
@@ -192,6 +206,7 @@ namespace PY {
         score = 0;
         need_reload = false;
         mario = Moving(39, 10, 3, 3, '@');
+        mario.horizon_speed = MONSTER_SPEED;
         
         switch (lvl) {
             case 1:
@@ -208,8 +223,14 @@ namespace PY {
                 objects.add_brick(Object(120, 15, 10, 10, '#'));
                 objects.add_brick(Object(150, 20, 40, 5, '#'));
                 objects.add_brick(Object(210, 15, 10, 10, '+'));
-                objects.add_moving(Moving(25, 10, 3, 2, 'o'));
-                objects.add_moving(Moving(80, 10, 3, 2, 'o'));
+				
+                Moving m(25, 10, 3, 2, 'o');
+                m.horizon_speed = MONSTER_SPEED;
+                objects.add_moving(m);
+
+                Moving m(80, 10, 3, 2, 'o');
+                m.horizon_speed = MONSTER_SPEED;
+                objects.add_moving(m);
                 break;
                 
             case 2:
@@ -219,12 +240,30 @@ namespace PY {
                 objects.add_brick(Object(120, 15, 10, 10, '#'));
                 objects.add_brick(Object(150, 20, 40, 5, '#'));
                 objects.add_brick(Object(210, 15, 10, 10, '+'));
-                objects.add_moving(Moving(25, 10, 3, 2, 'o'));
-                objects.add_moving(Moving(80, 10, 3, 2, 'o'));
-                objects.add_moving(Moving(65, 10, 3, 2, 'o'));
-                objects.add_moving(Moving(120, 10, 3, 2, 'o'));
-                objects.add_moving(Moving(160, 10, 3, 2, 'o'));
-                objects.add_moving(Moving(175, 10, 3, 2, 'o'));
+				
+                Moving m(25, 10, 3, 2, 'o');
+                m.horizon_speed = MONSTER_SPEED;
+                objects.add_moving(m);
+
+                Moving m(80, 10, 3, 2, 'o');
+                m.horizon_speed = MONSTER_SPEED;
+                objects.add_moving(m);
+
+                Moving m(65, 10, 3, 2, 'o');
+                m.horizon_speed = MONSTER_SPEED;
+                objects.add_moving(m);
+
+                Moving m(120, 10, 3, 2, 'o');
+                m.horizon_speed = MONSTER_SPEED;
+                objects.add_moving(m);
+
+                Moving m(160, 10, 3, 2, 'o');
+                m.horizon_speed = MONSTER_SPEED;
+                objects.add_moving(m);
+
+                Moving m(175, 10, 3, 2, 'o');
+                m.horizon_speed = MONSTER_SPEED;
+                objects.add_moving(m);
                 break;
                 
             case 3:

@@ -8,7 +8,6 @@ int main() {
     Game game;
     game.create_level(game.level);
     
-    system("color 9F");
     system("mode con cols=121 lines=36");
     
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -23,7 +22,7 @@ int main() {
             continue;
         }
         
-        game.clear_map();
+        game.game_map.clear();
         
         if (!game.mario.is_fly && GetKeyState(VK_SPACE) < 0) {
             game.mario.vert_speed = JUMP_SPEED;
@@ -38,8 +37,8 @@ int main() {
         }
         
         bool collision = false;
-        for (int i = 0; i < game.bricks_count; i++) {
-            if (game.mario.check_collision(game.bricks[i])) {
+        for (int i = 0; i < game.objects.bricks_count; i++) {
+            if (game.mario.check_collision(game.objects.bricks[i])) {
                 collision = true;
                 break;
             }
@@ -48,12 +47,7 @@ int main() {
         if (collision) {
             game.mario.x = oldX;
         } else {
-            for (int i = 0; i < game.bricks_count; i++) {
-                game.bricks[i].x -= (game.mario.x - oldX);
-            }
-            for (int i = 0; i < game.movings_count; i++) {
-                game.movings[i].x -= (game.mario.x - oldX);
-            }
+            game.scroll_world(game.mario.x - oldX);
         }
         
         if (game.mario.y > MAP_HEIGHT) {
@@ -64,27 +58,27 @@ int main() {
         game.move_object(game.mario);
         game.check_collisions();
         
-        for (int i = 0; i < game.bricks_count; i++) {
-            game.bricks[i].draw(game.map);
+        for (int i = 0; i < game.objects.bricks_count; i++) {
+            game.objects.bricks[i].draw(game.game_map.data);
         }
         
-        for (int i = 0; i < game.movings_count; i++) {
-            game.move_object(game.movings[i]);
-            game.move_horizon(game.movings[i]);
-            if (game.movings[i].y > MAP_HEIGHT) {
-                game.delete_moving(i);
+        for (int i = 0; i < game.objects.movings_count; i++) {
+            game.move_object(game.objects.movings[i]);
+            game.move_horizon(game.objects.movings[i]);
+            if (game.objects.movings[i].y > MAP_HEIGHT) {
+                game.objects.delete_moving(i);
                 i--;
                 continue;
             }
-            game.movings[i].draw(game.map);
+            game.objects.movings[i].draw(game.game_map.data);
         }
         
-        game.mario.draw(game.map);
-        game.put_score();
+        game.mario.draw(game.game_map.data);
+        game.game_map.put_score(game.score);
         
         COORD coord = {0, 0};
         SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-        game.show_map();
+        game.game_map.show();
         
         Sleep(16);
         

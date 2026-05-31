@@ -75,44 +75,24 @@ namespace PY {
                (y + height > other.y) && (y < other.y + other.height);
     }
     
-    Game::Game() {
-        bricks = nullptr;
-        movings = nullptr;
-        bricks_count = 0;
-        bricks_capacity = 10;
-        movings_count = 0;
-        movings_capacity = 10;
-        level = 1;
-        score = 0;
-        need_reload = false;
-        
-        bricks = new Object[bricks_capacity];
-        movings = new Moving[movings_capacity];
-    }
-    
-    Game::~Game() {
-        delete[] bricks;
-        delete[] movings;
-    }
-    
-    void Game::clear_map() {
+    void Map::clear() {
         for (int i = 0; i < MAP_WIDTH; i++) {
-            map[0][i] = ' ';
+            data[0][i] = ' ';
         }
-        map[0][MAP_WIDTH] = '\0';
+        data[0][MAP_WIDTH] = '\0';
         
         for (int j = 1; j < MAP_HEIGHT; j++) {
-            memcpy(map[j], map[0], MAP_WIDTH + 1);
+            memcpy(data[j], data[0], MAP_WIDTH + 1);
         }
     }
     
-    void Game::show_map() {
+    void Map::show() {
         static HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
         static char buffer[MAP_HEIGHT * (MAP_WIDTH + 2)];
         int pos = 0;
         
         for (int j = 0; j < MAP_HEIGHT; j++) {
-            memcpy(buffer + pos, map[j], MAP_WIDTH);
+            memcpy(buffer + pos, data[j], MAP_WIDTH);
             pos += MAP_WIDTH;
             buffer[pos++] = '\n';
         }
@@ -121,17 +101,34 @@ namespace PY {
         WriteConsole(hConsole, buffer, pos, &written, NULL);
     }
     
-    void Game::put_score() {
+    void Map::put_score(int score) {
         char text[30];
         sprintf(text, "Score: %d", score);
         int len = strlen(text);
         
         for (int i = 0; i < len; i++) {
-            map[1][i + 5] = text[i];
+            data[1][i + 5] = text[i];
         }
     }
     
-    void Game::add_brick(const Object& brick) {
+    ObjectList::ObjectList() {
+        bricks = nullptr;
+        movings = nullptr;
+        bricks_count = 0;
+        bricks_capacity = 10;
+        movings_count = 0;
+        movings_capacity = 10;
+        
+        bricks = new Object[bricks_capacity];
+        movings = new Moving[movings_capacity];
+    }
+    
+    ObjectList::~ObjectList() {
+        delete[] bricks;
+        delete[] movings;
+    }
+    
+    void ObjectList::add_brick(const Object& brick) {
         if (bricks_count >= bricks_capacity) {
             bricks_capacity *= 2;
             Object* new_bricks = new Object[bricks_capacity];
@@ -145,7 +142,7 @@ namespace PY {
         bricks_count++;
     }
     
-    void Game::add_moving(const Moving& moving) {
+    void ObjectList::add_moving(const Moving& moving) {
         if (movings_count >= movings_capacity) {
             movings_capacity *= 2;
             Moving* new_movings = new Moving[movings_capacity];
@@ -159,11 +156,84 @@ namespace PY {
         movings_count++;
     }
     
-    void Game::delete_moving(int index) {
+    void ObjectList::delete_moving(int index) {
         for (int i = index; i < movings_count - 1; i++) {
             movings[i] = movings[i + 1];
         }
         movings_count--;
+    }
+    
+    void ObjectList::clear_all() {
+        delete[] bricks;
+        delete[] movings;
+        
+        bricks_count = 0;
+        bricks_capacity = 10;
+        movings_count = 0;
+        movings_capacity = 10;
+        
+        bricks = new Object[bricks_capacity];
+        movings = new Moving[movings_capacity];
+    }
+    
+    Game::Game() {
+        level = 1;
+        score = 0;
+        need_reload = false;
+        mario = Moving(39, 10, 3, 3, '@');
+    }
+    
+    Game::~Game() {}
+    
+    void Game::create_level(int lvl) {
+        system("color 9F");
+        
+        objects.clear_all();
+        score = 0;
+        need_reload = false;
+        mario = Moving(39, 10, 3, 3, '@');
+        
+        switch (lvl) {
+            case 1:
+                objects.add_brick(Object(20, 20, 40, 5, '#'));
+                objects.add_brick(Object(30, 10, 5, 3, '?'));
+                objects.add_brick(Object(50, 10, 5, 3, '?'));
+                objects.add_brick(Object(60, 15, 40, 10, '#'));
+                objects.add_brick(Object(60, 5, 5, 3, '-'));
+                objects.add_brick(Object(70, 5, 5, 3, '?'));
+                objects.add_brick(Object(75, 5, 5, 3, '-'));
+                objects.add_brick(Object(80, 5, 5, 3, '?'));
+                objects.add_brick(Object(85, 5, 10, 3, '-'));
+                objects.add_brick(Object(100, 20, 20, 5, '#'));
+                objects.add_brick(Object(120, 15, 10, 10, '#'));
+                objects.add_brick(Object(150, 20, 40, 5, '#'));
+                objects.add_brick(Object(210, 15, 10, 10, '+'));
+                objects.add_moving(Moving(25, 10, 3, 2, 'o'));
+                objects.add_moving(Moving(80, 10, 3, 2, 'o'));
+                break;
+                
+            case 2:
+                objects.add_brick(Object(20, 20, 40, 5, '#'));
+                objects.add_brick(Object(60, 15, 10, 10, '#'));
+                objects.add_brick(Object(80, 20, 20, 5, '#'));
+                objects.add_brick(Object(120, 15, 10, 10, '#'));
+                objects.add_brick(Object(150, 20, 40, 5, '#'));
+                objects.add_brick(Object(210, 15, 10, 10, '+'));
+                objects.add_moving(Moving(25, 10, 3, 2, 'o'));
+                objects.add_moving(Moving(80, 10, 3, 2, 'o'));
+                objects.add_moving(Moving(65, 10, 3, 2, 'o'));
+                objects.add_moving(Moving(120, 10, 3, 2, 'o'));
+                objects.add_moving(Moving(160, 10, 3, 2, 'o'));
+                objects.add_moving(Moving(175, 10, 3, 2, 'o'));
+                break;
+                
+            case 3:
+                objects.add_brick(Object(20, 20, 40, 5, '#'));
+                objects.add_brick(Object(80, 20, 15, 5, '#'));
+                objects.add_brick(Object(120, 15, 15, 10, '#'));
+                objects.add_brick(Object(160, 10, 15, 15, '+'));
+                break;
+        }
     }
     
     void Game::move_object(Moving& obj) {
@@ -171,20 +241,20 @@ namespace PY {
         obj.vert_speed += GRAVITY;
         obj.y += obj.vert_speed;
         
-        for (int i = 0; i < bricks_count; i++) {
-            if (obj.check_collision(bricks[i])) {
+        for (int i = 0; i < objects.bricks_count; i++) {
+            if (obj.check_collision(objects.bricks[i])) {
                 if (obj.vert_speed > 0) {
                     obj.is_fly = false;
                 }
                 
-                if (bricks[i].type == '?' && obj.vert_speed < 0 && &obj == &mario) {
-                    bricks[i].type = '-';
-                    Moving coin(bricks[i].x, bricks[i].y - 3, 3, 2, '$');
+                if (objects.bricks[i].type == '?' && obj.vert_speed < 0 && &obj == &mario) {
+                    objects.bricks[i].type = '-';
+                    Moving coin(objects.bricks[i].x, objects.bricks[i].y - 3, 3, 2, '$');
                     coin.vert_speed = COIN_VERT_SPEED;
-                    add_moving(coin);
+                    objects.add_moving(coin);
                 }
                 
-                if (bricks[i].type == '+') {
+                if (objects.bricks[i].type == '+') {
                     level++;
                     if (level > MAX_LVL) {
                         level = 1;
@@ -205,8 +275,8 @@ namespace PY {
     void Game::move_horizon(Moving& obj) {
         obj.x += obj.horizon_speed;
         
-        for (int i = 0; i < bricks_count; i++) {
-            if (obj.check_collision(bricks[i])) {
+        for (int i = 0; i < objects.bricks_count; i++) {
+            if (obj.check_collision(objects.bricks[i])) {
                 obj.x -= obj.horizon_speed;
                 obj.horizon_speed = -obj.horizon_speed;
                 return;
@@ -223,84 +293,23 @@ namespace PY {
         }
     }
     
-    void Game::create_level(int lvl) {
-        system("color 9F");
-        
-        delete[] bricks;
-        delete[] movings;
-        
-        bricks_count = 0;
-        bricks_capacity = 10;
-        movings_count = 0;
-        movings_capacity = 10;
-        
-        bricks = new Object[bricks_capacity];
-        movings = new Moving[movings_capacity];
-        
-        mario = Moving(39, 10, 3, 3, '@');
-        score = 0;
-        need_reload = false;
-        
-        switch (lvl) {
-            case 1:
-                add_brick(Object(20, 20, 40, 5, '#'));
-                add_brick(Object(30, 10, 5, 3, '?'));
-                add_brick(Object(50, 10, 5, 3, '?'));
-                add_brick(Object(60, 15, 40, 10, '#'));
-                add_brick(Object(60, 5, 5, 3, '-'));
-                add_brick(Object(70, 5, 5, 3, '?'));
-                add_brick(Object(75, 5, 5, 3, '-'));
-                add_brick(Object(80, 5, 5, 3, '?'));
-                add_brick(Object(85, 5, 10, 3, '-'));
-                add_brick(Object(100, 20, 20, 5, '#'));
-                add_brick(Object(120, 15, 10, 10, '#'));
-                add_brick(Object(150, 20, 40, 5, '#'));
-                add_brick(Object(210, 15, 10, 10, '+'));
-                add_moving(Moving(25, 10, 3, 2, 'o'));
-                add_moving(Moving(80, 10, 3, 2, 'o'));
-                break;
-                
-            case 2:
-                add_brick(Object(20, 20, 40, 5, '#'));
-                add_brick(Object(60, 15, 10, 10, '#'));
-                add_brick(Object(80, 20, 20, 5, '#'));
-                add_brick(Object(120, 15, 10, 10, '#'));
-                add_brick(Object(150, 20, 40, 5, '#'));
-                add_brick(Object(210, 15, 10, 10, '+'));
-                add_moving(Moving(25, 10, 3, 2, 'o'));
-                add_moving(Moving(80, 10, 3, 2, 'o'));
-                add_moving(Moving(65, 10, 3, 2, 'o'));
-                add_moving(Moving(120, 10, 3, 2, 'o'));
-                add_moving(Moving(160, 10, 3, 2, 'o'));
-                add_moving(Moving(175, 10, 3, 2, 'o'));
-                break;
-                
-            case 3:
-                add_brick(Object(20, 20, 40, 5, '#'));
-                add_brick(Object(80, 20, 15, 5, '#'));
-                add_brick(Object(120, 15, 15, 10, '#'));
-                add_brick(Object(160, 10, 15, 15, '+'));
-                break;
-        }
-    }
-    
     void Game::check_collisions() {
-        for (int i = 0; i < movings_count; i++) {
-            if (mario.check_collision(movings[i])) {
-                if (movings[i].type == 'o') {
+        for (int i = 0; i < objects.movings_count; i++) {
+            if (mario.check_collision(objects.movings[i])) {
+                if (objects.movings[i].type == 'o') {
                     if (mario.is_fly && mario.vert_speed > 0 && 
-                        mario.y + mario.height < movings[i].y + movings[i].height * 0.5) {
+                        mario.y + mario.height < objects.movings[i].y + objects.movings[i].height * 0.5) {
                         score += SCORE_MONSTER;
-                        delete_moving(i);
+                        objects.delete_moving(i);
                         i--;
                     } else {
                         player_dead();
                         return;
                     }
                 }
-                else if (movings[i].type == '$') {
+                else if (objects.movings[i].type == '$') {
                     score += SCORE_COIN;
-                    delete_moving(i);
+                    objects.delete_moving(i);
                     i--;
                 }
             }
@@ -311,5 +320,14 @@ namespace PY {
         system("color 4F");
         Sleep(500);
         need_reload = true;
+    }
+    
+    void Game::scroll_world(float deltaX) {
+        for (int i = 0; i < objects.bricks_count; i++) {
+            objects.bricks[i].x -= deltaX;
+        }
+        for (int i = 0; i < objects.movings_count; i++) {
+            objects.movings[i].x -= deltaX;
+        }
     }
 }

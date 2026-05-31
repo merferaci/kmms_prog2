@@ -41,32 +41,48 @@ namespace PY {
         bool check_collision(const Moving& other);
     };
 
+    class Map {
+    public:
+        char data[MAP_HEIGHT][MAP_WIDTH + 1];
+        
+        void clear();
+        void show();
+        void put_score(int score);
+    };
+
+    class ObjectList {
+    public:
+        Object* bricks;
+        Moving* movings;
+        int bricks_count;
+        int movings_count;
+        int bricks_capacity;
+        int movings_capacity;
+        
+        ObjectList();
+        ~ObjectList();
+        void add_brick(const Object& brick);
+        void add_moving(const Moving& moving);
+        void delete_moving(int index);
+        void clear_all();
+    };
+
     class Game {
     public:
-        char map[MAP_HEIGHT][MAP_WIDTH + 1];
-        Object* bricks;
-        int bricks_count;
-        int bricks_capacity;
-        Moving* movings;
-        int movings_count;
-        int movings_capacity;
+        Map game_map;
+        ObjectList objects;
         Moving mario;
         int level;
         int score;
         bool need_reload;
-
+        
         Game();
         ~Game();
-        void clear_map();
-        void show_map();
-        void put_score();
-        void add_brick(const Object& brick);
-        void add_moving(const Moving& moving);
-        void delete_moving(int index);
+        void create_level(int lvl);
         void move_object(Moving& obj);
         void move_horizon(Moving& obj);
-        void create_level(int lvl);
         void check_collisions();
         void player_dead();
+        void scroll_world(float deltaX);
     };
 }

@@ -10,6 +10,8 @@
 
 namespace py {
 	class KeyBoardWindow : public QWidget {
+		Q_OBJECT
+		
 		private:
 			QLineEdit* display;
 			KeyBoard* keyboard;
@@ -19,5 +21,8 @@ namespace py {
 
 		protected:
 			void keyPressEvent(QKeyEvent* event) override;
+			
+		private slots: 
+			void handleKeyPress(int code);
 	};
 }

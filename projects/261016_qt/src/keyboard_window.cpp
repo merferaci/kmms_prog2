@@ -26,8 +26,10 @@ KeyBoardWindow::KeyBoardWindow(QWidget* parent) : QWidget(parent) {
 	display->setFont(QFont("Roboto", 40));
 	display->setReadOnly(true);
 	display->setText("Помоги мне заработать лучше...");
+	display->setFocusPolicy(Qt::NoFocus); 
 
 	keyboard = new KeyBoard(keyboard_width);
+	connect(keyboard, &KeyBoard::keyClicked, this, &KeyBoardWindow::handleKeyPress);
 
 	QVBoxLayout* main_layout = new QVBoxLayout(this);
 	main_layout->addLayout(smail_layout);
@@ -36,9 +38,42 @@ KeyBoardWindow::KeyBoardWindow(QWidget* parent) : QWidget(parent) {
 }
 
 void KeyBoardWindow::keyPressEvent(QKeyEvent* event) {
-	const int key = event->nativeVirtualKey();
-	if (keyboard->is_key_allowed(key)) {
-		display->setText(display->text() + keyboard->get_key_text(key));
-		keyboard->animate_button(key);
+    if (event->key() == Qt::Key_Backspace) {
+        display->backspace();
+        return;
+    }
+    if (event->key() == Qt::Key_Return) {
+        display->clear();
+        return;
+    }
+
+
+    QString text = event->text();
+    if (!text.isEmpty()) {
+        display->insert(text); 
+        keyboard->animate_by_text(text); 
+    }
+}
+
+void KeyBoardWindow::handleKeyPress(int code) {
+
+	if (code == Qt::Key_Backspace) {
+		display->backspace();
+	}
+	else if (code == Qt::Key_Space) {
+		display->insert(" ");
+	}
+	else if (code == Qt::Key_Tab) {
+		display->insert("\t");
+	}
+	else if (code == Qt::Key_Return) {
+		display->clear(); 
+	}
+	else if (keyboard->is_key_allowed(code)) {
+		QString txt = keyboard->get_key_text(code);
+		if (!txt.isEmpty()) {
+			display->insert(txt);
+		}
+		keyboard->animate_button(code);
 	}
 }

@@ -1,4 +1,5 @@
 #include "keyboard.hpp"
+#include <QTimer> // Добавлено для анимации
 
 using py::KeyBoard;
 
@@ -17,11 +18,17 @@ KeyBoard::KeyBoard(const int width, QWidget* parent)
 	KeyBoardButton* backspace_btn = new KeyBoardButton("Удалить");
 	backspace_btn->setMinimumSize(2 * button_width, button_width);
 	keys_layout->addWidget(backspace_btn, 0, 26, 2, 3);
+	connect(backspace_btn, &QPushButton::clicked, this, [this]() {
+		emit keyClicked(Qt::Key_Backspace);
+	});
 
 	// 2-я линия
 	KeyBoardButton* tab_btn = new KeyBoardButton("Tab");
 	tab_btn->setMinimumSize(2 * button_width, button_width);
 	keys_layout->addWidget(tab_btn, 2, 0, 2, 3);
+	connect(tab_btn, &QPushButton::clicked, this, [this]() {
+		emit keyClicked(Qt::Key_Tab);
+	});
 
 	create_buttons(keyboard_data->get_line2(), keys_layout, 2, 3);
 
@@ -35,6 +42,9 @@ KeyBoard::KeyBoard(const int width, QWidget* parent)
 	KeyBoardButton* enter_btn = new KeyBoardButton("Enter");
 	enter_btn->setMinimumSize(2 * button_width, button_width);
 	keys_layout->addWidget(enter_btn, 4, 26, 2, 3);
+	connect(enter_btn, &QPushButton::clicked, this, [this]() {
+		emit keyClicked(Qt::Key_Return);
+	});
 
 	// 4-я линия
 	KeyBoardButton* left_shift_btn = new KeyBoardButton("Shift");
@@ -51,14 +61,39 @@ KeyBoard::KeyBoard(const int width, QWidget* parent)
 	KeyBoardButton* space = new KeyBoardButton();
 	space->setMinimumSize(8 * button_width, button_width);
 	keys_layout->addWidget(space, 8, 7, 2, 16);
+	connect(space, &QPushButton::clicked, this, [this]() {
+		emit keyClicked(Qt::Key_Space);
+	});
 }
 
 void KeyBoard::animate_button(const int code) {
-	buttons.at(code)->animateClick();
+	auto it = buttons.find(code);
+	if (it != buttons.end()) {
+		it->second->setDown(true);
+		QTimer::singleShot(100, [it]() {
+			it->second->setDown(false);
+		});
+	}
+}
+
+void KeyBoard::animate_by_text(const QString& text) {
+	for (auto& pair : buttons) {
+		if (pair.second->text() == text) {
+			pair.second->setDown(true);
+			QTimer::singleShot(100, [btn = pair.second]() {
+				btn->setDown(false);
+			});
+			break;
+		}
+	}
 }
 
 QString KeyBoard::get_key_text(const int code) const {
-	return buttons.at(code)->text();
+	auto it = buttons.find(code);
+	if (it != buttons.end()) {
+		return it->second->text();
+	}
+	return "";
 }
 
 bool KeyBoard::is_key_allowed(const int code) const noexcept {
@@ -78,5 +113,9 @@ void KeyBoard::create_buttons(
 		layout->addWidget(btn, line, i * 2 + start_position, 2, 2);
 
 		buttons[data[i].code] = btn;
+		
+		connect(btn, &QPushButton::clicked, this, [this, code = data[i].code]() {
+			emit keyClicked(code);
+		});
 	}
 }

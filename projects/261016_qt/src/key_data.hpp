@@ -2,7 +2,7 @@
 
 #include <QString>
 
-namespace biv {
+namespace py {
 	struct KeyData {
 		const int code;
 		const QString text;

@@ -1,11 +1,12 @@
 set(PROJECTS_LIST
     251016_refactoring
-    251023_ccpp_compilation
+    251023_cpp_compilation
     251029_refactoring_2
     251125_menu
     251126_menu_2
     260302_long_number
     260314_vector_list
+    261016_qt
 )
 
 foreach(PROJECT ${PROJECTS_LIST})

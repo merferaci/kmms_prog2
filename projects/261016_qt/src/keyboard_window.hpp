@@ -8,7 +8,7 @@
 
 #include "keyboard.hpp"
 
-namespace biv {
+namespace py {
 	class KeyBoardWindow : public QWidget {
 		private:
 			QLineEdit* display;
@@ -16,7 +16,7 @@ namespace biv {
 
 		public:
 			KeyBoardWindow(QWidget* parent = nullptr);
-			
+
 		protected:
 			void keyPressEvent(QKeyEvent* event) override;
 	};

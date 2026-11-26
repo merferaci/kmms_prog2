@@ -1,0 +1,20 @@
+{
+	"InstallScripts" : 
+	[
+		"D:/_IT/code/kmms_prog2/build/cmake_install.cmake",
+		"D:/_IT/code/kmms_prog2/build/projects/cmake_install.cmake",
+		"D:/_IT/code/kmms_prog2/build/projects/251016_refactoring/cmake_install.cmake",
+		"D:/_IT/code/kmms_prog2/build/projects/251023_cpp_compilation/cmake_install.cmake",
+		"D:/_IT/code/kmms_prog2/build/projects/251029_refactoring_2/cmake_install.cmake",
+		"D:/_IT/code/kmms_prog2/build/projects/251125_menu/cmake_install.cmake",
+		"D:/_IT/code/kmms_prog2/build/projects/260302_long_number/cmake_install.cmake",
+		"D:/_IT/code/kmms_prog2/build/_deps/googletest-build/cmake_install.cmake",
+		"D:/_IT/code/kmms_prog2/build/_deps/googletest-build/googlemock/cmake_install.cmake",
+		"D:/_IT/code/kmms_prog2/build/_deps/googletest-build/googletest/cmake_install.cmake",
+		"D:/_IT/code/kmms_prog2/build/projects/260314_vector_list/cmake_install.cmake",
+		"D:/_IT/code/kmms_prog2/build/projects/260314_vector_list/src/cmake_install.cmake",
+		"D:/_IT/code/kmms_prog2/build/projects/260314_vector_list/test/cmake_install.cmake",
+		"D:/_IT/code/kmms_prog2/build/projects/261016_qt/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

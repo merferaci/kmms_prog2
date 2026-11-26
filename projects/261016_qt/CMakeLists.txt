@@ -16,6 +16,7 @@ set(PROJECT_SOURCES
         src/main.cpp
 		src/keyboard.cpp
 		src/keyboard_button.cpp
+		src/welcome_window.cpp
 		src/keyboard_data.cpp
 		src/keyboard_window.cpp
 )

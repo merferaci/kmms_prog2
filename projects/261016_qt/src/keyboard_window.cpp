@@ -12,7 +12,8 @@ KeyBoardWindow::KeyBoardWindow(QWidget* parent) : QWidget(parent) {
 	resize(keyboard_width, 710);
 	setWindowTitle("Грустная Клавиатура");
 
-	QPixmap pixmap("img/grustnii-smail.png");
+	// QPixmap pixmap("img/grustnii-smail.png");
+	QPixmap pixmap("img/veselii-smail.png");
 	QLabel* image = new QLabel(this);
 	image->setFixedSize(200, 200);
 	image->setPixmap(pixmap);

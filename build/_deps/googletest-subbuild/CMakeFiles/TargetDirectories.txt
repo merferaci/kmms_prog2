@@ -1,3 +1,0 @@
-D:/_IT/code/kmms_prog2/build/_deps/googletest-subbuild/CMakeFiles/googletest-populate.dir
-D:/_IT/code/kmms_prog2/build/_deps/googletest-subbuild/CMakeFiles/edit_cache.dir
-D:/_IT/code/kmms_prog2/build/_deps/googletest-subbuild/CMakeFiles/rebuild_cache.dir

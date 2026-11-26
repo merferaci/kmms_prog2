@@ -11,7 +11,8 @@ WelcomeWindow::WelcomeWindow(QWidget *parent) : QWidget(parent) {
 
     QVBoxLayout *layout = new QVBoxLayout(this);
 
-    QPixmap pixmap("img/grustnii-smail.png"); 
+    // QPixmap pixmap("img/grustnii-smail.png"); 
+	QPixmap pixmap("img/veselii-smail.png");
     QLabel* image = new QLabel(this);
     image->setFixedSize(200, 200);
     image->setPixmap(pixmap);

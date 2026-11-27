@@ -1,5 +1,5 @@
 #include "keyboard.hpp"
-#include <QTimer> // Добавлено для анимации
+#include <QTimer> 
 
 using py::KeyBoard;
 
